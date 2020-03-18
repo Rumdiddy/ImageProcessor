@@ -1,3 +1,8 @@
+#Samuel Jin
+#Ajay Ananthakrishnan
+#sjin16
+#aananth3
+
 CC=gcc
 CFLAGS=-std=c99 -pedantic -Wall -Wextra -g
 

@@ -1,9 +1,10 @@
+//Samuel Jin
+//Ajay Ananthakrishnan
+//sjin16
+//aananth3
 
-// __Add your name and JHED above__
 // ppm_io.h
 // 601.220, Spring 2019
-// Starter code for midterm project - feel free to edit/add to this file
-
 
 #ifndef PPM_IO_H
 #define PPM_IO_H
