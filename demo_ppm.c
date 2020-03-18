@@ -1,3 +1,7 @@
+//Samuel Jin
+//Ajay Ananthakrishnan
+//sjin16
+//aananth3
 //demo_ppm.c
 
 #include <stdio.h>
