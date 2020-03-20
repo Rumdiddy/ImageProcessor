@@ -12,7 +12,7 @@
 //and writes the altered pixel values to the output.
 void exposure(Image *input, Image *output, double factor){
 
-  inputLength = (*input.rows) * (*input.cols); 
+  int inputLength = (*input.rows) * (*input.cols); 
   for (int i = 0; i < inputLength; i++){
     *(output -> data + i) = *(input -> data + i) * pow(2, factor); 
   }
@@ -22,7 +22,7 @@ void exposure(Image *input, Image *output, double factor){
 //and produces an output image 4 times the area.
 void zoomIN(Image *input, Image *output){
 
-  inputLength =	(*input.rows) * (*input.cols);
+  int inputLength =	(*input.rows) * (*input.cols);
   
   int outind = 0;
   int rowskip = 0;
