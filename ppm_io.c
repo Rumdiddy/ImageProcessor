@@ -16,8 +16,8 @@
  * creates and populates with the Image data.
  */
 Image * read_ppm(FILE *fp) {
-
-  // check that fp is not NULL
+  
+  
   assert(fp); 
 
   return NULL;  //TO DO: replace this stub
