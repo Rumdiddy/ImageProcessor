@@ -7,6 +7,8 @@
 
 #include "imageManip.h"
 #include "ppm_io.h"
+#include <assert.h>
+#include <string.h>
 
 int main (int argc, char *argv[]) {
 
