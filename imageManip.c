@@ -22,6 +22,62 @@ void exposure(Image *input, Image *output, double factor){
   }
 }
 
+
+//Performs blending of two image files by a certain factor              
+void blend(Image *imput1, Image *input2, Image *output, double factor ){
+
+  int outputLength = (*output.rows) * (*output.cols);
+
+  int rowTracker = 1; //what row you are in 
+  int colTracker = 1; //what col you are in 
+  
+  for (int i = 0; i < outputLength; i++){
+
+    if (colTracker > (input1 -> cols)){           //case where input 2 has more cols than input 1
+      ((output -> data + i) -> r) = ((input2 -> data + i) -> r);
+      ((output -> data + i) -> g) = ((input2 -> data + i) -> g);
+      ((output -> data + i) -> b) = ((input2 -> data + i) -> b);
+
+    }
+    
+    else if (colTracker > (input2 -> cols)){      //vice versa case
+      ((output -> data + i) -> r) = ((input1 -> data + i) -> r);
+      ((output -> data + i) -> g) = ((input1 -> data + i) -> g);
+      ((output -> data + i) -> b) = ((input1 -> data + i) -> b);
+
+    }
+    
+    else if (rowTracker > (input1 -> rows)){  	  //case where input 2 has more rows than input 1                     
+      ((output -> data + i) -> r) = ((input2 -> data + i) -> r);
+      ((output -> data + i) -> g) = ((input2 -> data + i) -> g);
+      ((output -> data + i) -> b) = ((input2 -> data + i) -> b);
+
+    }
+    
+    else if (rowTracker > (input2 -> rows)){      //vice versa case                                                   
+      ((output -> data + i) -> r) = ((input1 -> data + i) -> r);
+      ((output -> data + i) -> g) = ((input1 -> data + i) -> g);
+      ((output -> data + i) -> b) = ((input1 -> data + i) -> b);
+
+    }
+    
+    else{                                        //case when output index is within bounds of both inputs
+    ((output -> data + i) -> r) = factor *  ((input1 -> data + i) -> r) + (1 - factor) * ((input2 -> data + i) -> r);
+    ((output -> data + i) -> g) = factor *  ((input1 -> data + i) -> g) + (1 - factor) * ((input2 -> data + i) -> g);
+    ((output -> data + i) -> b) = factor *  ((input1 -> data + i) -> b) + (1 - factor) * ((input2 -> data + i) -> b);
+    }
+   
+    colTracker++;
+    
+    if (colTracker == (*output.cols)){
+      colTracker = 1;
+      rowTracker++; 
+    }
+  }
+  
+}
+
+
 //implementation of the zoomin function which zooms in on the input image by a factor of 2
 //and produces an output image 4 times the area.
 void zoomIN(Image *input, Image *output){
@@ -55,6 +111,8 @@ void zoomIN(Image *input, Image *output){
   }
 }
 
+
+//Performs zoomout function on the provided image                       
 void zoomOUT(Image * input, Image *output){
 
   int rowskip = 0; 
