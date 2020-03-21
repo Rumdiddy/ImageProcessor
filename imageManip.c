@@ -1,3 +1,4 @@
+
 //Samuel Jin
 //Ajay Ananthakrishnan
 //sjin16
@@ -46,3 +47,20 @@ void zoomIN(Image *input, Image *output){
     }
   }
 }
+
+void zoomOUT(Image * input, Image *output){
+
+  int rowskip = 0; 
+  int inputLength = (*output.rows) * (*output.cols);
+
+  for (int i = 0 ; i <inputLength; i++){
+    //this is actually wrong 
+    *(output -> data + i) = (*(input -> (data + (2 * i) + rowskip)) + *(data + (2 * i) +1 + rowskip) + *(data + (2 * i) + (*input.cols) + rowskip) + *(data + (2 * i) + (*input.cols) + 1 + rowskip)) / 4;   
+
+    if (i % (*output.cols) = (*output.cols) - 1){
+      rowskip = rowskip + (*input.cols); 
+    }
+
+  }
+}
+
