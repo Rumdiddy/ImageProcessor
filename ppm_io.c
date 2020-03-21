@@ -8,7 +8,8 @@
 
 #include <assert.h>
 #include "ppm_io.h"
-
+#include <string.h>
+#include <stdio.h>
 
 
 /* Read a PPM-formatted image from a file (assumes fp != NULL).
@@ -16,12 +17,26 @@
  * creates and populates with the Image data.
  */
 Image * read_ppm(FILE *fp) {
-  
-  
   assert(fp); 
+  int col;
+  int row;
+  char *magic;
+  int colors;
 
-  return NULL;  //TO DO: replace this stub
-  
+  fscanf(fp, "%s %i %i %i", magic, col, row, colors);
+  assert(strlen(magic) == 2);
+  assert(magic[1] == '6' && magic[0] = 'P');
+  assert(colors == 255);
+
+  Image *input;
+  *input.rows = row;
+  *input.cols = col;
+  int size = row * col;
+
+  Pixel *dat = malloc(size * sizeof(Pixel));
+  fread(dat, sizeof(Pixel), size, fp);
+   
+  return input;  
 }
 
 
