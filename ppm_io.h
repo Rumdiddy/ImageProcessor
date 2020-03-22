@@ -47,5 +47,9 @@ Image * read_ppm(FILE *fp);
  */
 int write_ppm(FILE *fp, const Image *im);
 
+/* Checks the input command line arguments and ensures
+ * that they are correct for the operation provided.
+ */
+int arg_check(int argc, char *argv[]);
 
 #endif

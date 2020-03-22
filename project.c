@@ -9,22 +9,17 @@
 #include "ppm_io.h"
 #include <assert.h>
 #include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 int main (int argc, char *argv[]) {
 
-  //Checks for correct number of arguments
-  switch (argc) {
-    case 1: 
-      printf("Failed to supply input filename, output filename, and operation name.\n");
-      return 1;
-    case 2:
-      printf("Failed to supply output filename and operation name.\n");
-      return 1;
-    case 3:
-      printf("No operation name was specified.\n");
-      return 4;
+  //Checks command line arguments + operation
+  int argval = arg_check(argc, argv);
+  if (argval != 0) {
+    return argval;
   }
-
+  
   //Opens input file for reading
   FILE* ifptr;
   ifptr = fopen(argv[1], "r");
