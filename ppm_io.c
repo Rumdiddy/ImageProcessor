@@ -26,26 +26,26 @@ Image * read_ppm(FILE *fp) {
   //Checks if PPM file is properly formatted
   fscanf(fp, "%s %i %i %i", magic, col, row, colors);
   if(strlen(magic) != 2) {
-    *input.rows = -1;
+    (*input).rows = -1;
     return input;
   } else if (magic[1] != '6' || magic[0] != 'P') {
-    *input.rows = -1;
+    (*input).rows = -1;
     return input;
   } else if (colors != 255) {
-    *input.rows = -1;
+    (*input).rows = -1;
     return input;
   }
 
   //sets rows and columns
   Image *input;
-  *input.rows = row;
-  *input.cols = col;
+  (*input).rows = row;
+  (*input).cols = col;
   int size = row * col;
 
   //reads in the pixel data (r,g,b)
   Pixel *dat = malloc(size * sizeof(Pixel));
   fread(dat, sizeof(Pixel), size, fp);
-  *input.data = dat;
+  (*input).data = dat;
   
   return input;  
 }
@@ -152,4 +152,11 @@ int arg_check(int argc, char *argv[]) {
       }
   }
   return oper;
+}
+
+/* Generates output image to be filled. It determines
+ * the output image size based on the operation specified.
+ */
+Image * gen_out(int oper, Image *input1, Image *input2) {
+
 }
