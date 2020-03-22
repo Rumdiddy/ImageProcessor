@@ -158,5 +158,64 @@ int arg_check(int argc, char *argv[]) {
  * the output image size based on the operation specified.
  */
 Image * gen_out(int oper, Image *input1, Image *input2) {
+  int rows1 = (*input1).rows;
+  int cols1 = (*input1).cols;
+  int size1 = rows1 * cols1;
 
+  int rows2 = (*input2).rows;
+  int cols2 = (*input2).cols;
+
+  Pixel *emptdat;
+  Image *output;
+  int osize;
+
+  switch (oper) {
+    case 11:  //exposure
+      emptdat = malloc(size1 * sizeof(Pixel)); 
+      (*output).data = emptdat;
+      (*output).rows = rows1;
+      (*output).cols = cols1;
+      break;
+    case 12:  //blend
+      //checks for largest rows
+      if (rows1 > rows2) {
+        (*output).rows = rows1;
+      } else {
+        (*output).rows = rows2;
+      }
+
+      //checks for largest columns
+      if (cols1 > cols2) {
+        (*output).cols = cols1;
+      } else {
+        (*output).cols = cols2;
+      }
+
+      osize = (*output).cols * (*output).rows;
+      emptdat = malloc(osize * sizeof(Pixel));
+      (*output).data = emptdat;
+      break;
+    case 13:  //zoom_in
+      emptdat = malloc(4 * size1 * sizeof(Pixel));
+      (*output).data = emptdat;
+      (*output).rows = (2 * rows1);
+      (*output).cols = (2 * cols1);
+      break;
+    case 14:  //zoom_out
+      emptdat = malloc((1.0/4.0) * size1 * sizeof(Pixel));
+      (*output).data = emptdat;
+      (*output).rows = (0.5 * rows1);
+      (*output).cols = (0.5 * cols1);
+      break;
+    case 15:  //pointilism
+      //TO-DO
+      break;
+    case 16:  //swirl
+      //TO-DO
+      break;
+    case 17:  //blur
+      //TO-DO
+      break;
+  }  
+  return output;
 }

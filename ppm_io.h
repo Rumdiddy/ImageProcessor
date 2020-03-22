@@ -53,4 +53,9 @@ int write_ppm(FILE *fp, const Image *im);
  */
 int arg_check(int argc, char *argv[]);
 
+/* Generates output image to be filled. It determines
+ * the output image size based on the operation specified.
+ */
+Image * gen_out(int oper, Image *input1, Image *input2);
+
 #endif
