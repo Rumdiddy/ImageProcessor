@@ -15,9 +15,9 @@ void exposure(Image *input, Image *output, double factor){
 
   int inputLength = (*input.rows) * (*input.cols); 
   for (int i = 0; i < inputLength; i++){
-    *(output -> data + i).r = *(input -> data + i) * pow(2, factor);
-    *(output -> data + i).g = *(input -> data + i) * pow(2, factor);
-    *(output -> data + i).b = *(input -> data + i) * pow(2, factor);
+    (*(output -> data + i)).r = (*(input -> data + i)) * pow(2, factor);
+    (*(output -> data + i)).g = (*(input -> data + i)) * pow(2, factor);
+    (*(output -> data + i)).b = (*(input -> data + i)) * pow(2, factor);
 
   }
 }
@@ -89,13 +89,13 @@ void zoomIN(Image *input, Image *output){
   for (int i = 0; i < inputLength; i++){ 
     for (int j = 0; j < 4; j++){
       if (j > 1){
-        *(output -> data + (rowskip * (*input.cols)) + (2 * i) + (*input.cols) + (j - 2)).r = *(input -> data + i).r;
-        *(output -> data + (rowskip * (*input.cols)) + (2 * i) + (*input.cols) + (j - 2)).g = *(input -> data + i).g;
-        *(output -> data + (rowskip * (*input.cols)) + (2 * i) + (*input.cols) + (j - 2)).b = *(input -> data + i).b;
+        (*(output -> data + (rowskip * (*input.cols)) + (2 * i) + (*input.cols) + (j - 2))).r = *(input -> data + i).r;
+        (*(output -> data + (rowskip * (*input.cols)) + (2 * i) + (*input.cols) + (j - 2))).g = *(input -> data + i).g;
+        (*(output -> data + (rowskip * (*input.cols)) + (2 * i) + (*input.cols) + (j - 2))).b = *(input -> data + i).b;
       } else {
-	    *(output -> data + (rowskip * (*input.cols)) + (2 * i) +j).r = *(input -> data + i).r;
-        *(output -> data + (rowskip * (*input.cols)) + (2 * i) +j).g = *(input -> data + i).g;
-        *(output -> data + (rowskip * (*input.cols)) + (2 * i) +j).b = *(input -> data + i).b;
+      (*(output -> data + (rowskip * (*input.cols)) + (2 * i) +j).r = *(input -> data + i)).r;
+      (*(output -> data + (rowskip * (*input.cols)) + (2 * i) +j).g = *(input -> data + i)).g;
+      (*(output -> data + (rowskip * (*input.cols)) + (2 * i) +j).b = *(input -> data + i)).b;
       }
     }
     
@@ -115,14 +115,12 @@ void zoomOUT(Image * input, Image *output){
   //Loops through each pixel and condenses the average of 4 pixels into one pixel for color
   for (int i = 0 ; i < outputLength; i++) {
     
-    *(output -> data + i).r = (*(input -> (data + (2 * i) + rowskip)).r + *(data + (2 * i) + 1 + rowskip).r + *(data + (2 *\
-    i) + (*input.cols) + rowskip).r + *(data + (2 * i) + (*input.cols) + 1 + rowskip).r) / 4;
+    (*(output -> data + i)).r = ((*(input -> (data + (2 * i) + rowskip))).r + (*(data + (2 * i) + 1 + rowskip)).r + (*(data + (2 * i) + (*input.cols) + rowskip)).r + (*(data + (2 * i) + (*input.cols) + 1 + rowskip)).r) / 4;
 
-    *(output -> data + i).g = (*(input -> (data + (2 * i) + rowskip)).g + *(data + (2 * i) + 1 + rowskip).g + *(data + (2 *\
-    i) + (*input.cols) + rowskip).g + *(data + (2 * i) + (*input.cols) + 1 + rowskip).g) / 4;
+    (*(output -> data + i)).g =((*(input -> (data + (2 * i) + rowskip))).g +(*(data + (2 * i) + 1 + rowskip)).g + (*(data + (2 * i) + (*input.cols) + rowskip)).g + (*(data + (2 * i) + (*input.cols) + 1 + rowskip).g)) / 4;
 
-    *(output -> data + i).b = (*(input -> (data + (2 * i) + rowskip)).b + *(data + (2 * i) + 1 + rowskip).b + *(data + (2 *\
-    i) + (*input.cols) + rowskip).b + *(data + (2 * i) + (*input.cols) + 1 + rowskip).b) / 4;
+    (*(output -> data + i)).b = ((*(input -> (data + (2 * i) + rowskip))).b + (*(data + (2 * i) + 1 + rowskip)).b + (*(data + (2 * \
+															       i) + (*input.cols) + rowskip)).b + (*(data + (2 * i) + (*input.cols) + 1 + rowskip).b)) / 4;
     
     //allows for the second row to be skipped each time
     if (i % (*output.cols) = (*output.cols) - 1){
