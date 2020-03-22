@@ -62,12 +62,12 @@ void blend(Image *imput1, Image *input2, Image *output, double factor ){
     
     //case when output index is within bounds of both inputs
     else{                                       
-    ((output -> data + i) -> r) = factor *  ((input1 -> data + i) -> r) + (1 - factor) * ((input2 -> data + i) -> r);
-    ((output -> data + i) -> g) = factor *  ((input1 -> data + i) -> g) + (1 - factor) * ((input2 -> data + i) -> g);
-    ((output -> data + i) -> b) = factor *  ((input1 -> data + i) -> b) + (1 - factor) * ((input2 -> data + i) -> b);
+    ((output -> data + i) -> r) = (factor * ((input1 -> data + i) -> r)) + ((1 - factor) * ((input2 -> data + i) -> r));
+    ((output -> data + i) -> g) = (factor * ((input1 -> data + i) -> g)) + ((1 - factor) * ((input2 -> data + i) -> g));
+    ((output -> data + i) -> b) = (factor * ((input1 -> data + i) -> b)) + ((1 - factor) * ((input2 -> data + i) -> b));
     }
      
-    //tracks when to skip over a row
+    //tracks the row
     colTracker++;
     if (colTracker == (*output.cols)){
       colTracker = 1;
@@ -115,15 +115,16 @@ void zoomOUT(Image * input, Image *output){
   //Loops through each pixel and condenses the average of 4 pixels into one pixel for color
   for (int i = 0 ; i < outputLength; i++) {
     
-    *(output -> data + i).r = (*(input -> (data + (2 * i) + rowskip)).r + *(data + (2 * i) +1 + rowskip).r + *(data + (2 *\
+    *(output -> data + i).r = (*(input -> (data + (2 * i) + rowskip)).r + *(data + (2 * i) + 1 + rowskip).r + *(data + (2 *\
     i) + (*input.cols) + rowskip).r + *(data + (2 * i) + (*input.cols) + 1 + rowskip).r) / 4;
 
-    *(output -> data + i).g = (*(input -> (data + (2 * i) + rowskip)).g + *(data + (2 * i) +1 + rowskip).g + *(data + (2 *\
+    *(output -> data + i).g = (*(input -> (data + (2 * i) + rowskip)).g + *(data + (2 * i) + 1 + rowskip).g + *(data + (2 *\
     i) + (*input.cols) + rowskip).g + *(data + (2 * i) + (*input.cols) + 1 + rowskip).g) / 4;
 
-    *(output -> data + i).b = (*(input -> (data + (2 * i) + rowskip)).b + *(data + (2 * i) +1 + rowskip).b + *(data + (2 *\
+    *(output -> data + i).b = (*(input -> (data + (2 * i) + rowskip)).b + *(data + (2 * i) + 1 + rowskip).b + *(data + (2 *\
     i) + (*input.cols) + rowskip).b + *(data + (2 * i) + (*input.cols) + 1 + rowskip).b) / 4;
     
+    //allows for the second row to be skipped each time
     if (i % (*output.cols) = (*output.cols) - 1){
       rowskip = rowskip + (*input.cols); 
     }
