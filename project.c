@@ -42,7 +42,7 @@ int main (int argc, char *argv[]) {
 
   //Reads in input file pixel data and generates image
   Image * inputIm = read_ppm(ifptr);
-  if((*inputIm.rows == -1) && (*inputIm2.rows == -1)) {
+  if(((*inputIm).rows == -1) && ((*inputIm2).rows == -1)) {
     printf("Specified input file is not a properly-formatted PPM.");
     return 3;
   }
