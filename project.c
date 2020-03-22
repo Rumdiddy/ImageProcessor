@@ -15,9 +15,9 @@
 int main (int argc, char *argv[]) {
 
   //Checks command line arguments + operation
-  int argval = arg_check(argc, argv);
-  if (argval != 0) {
-    return argval;
+  int opval = arg_check(argc, argv);
+  if (opval < 11) {
+    return opval;
   }
   
   //Opens input file for reading
@@ -29,8 +29,23 @@ int main (int argc, char *argv[]) {
     return 2;
   }
 
-  Image * inputIm = read_ppm(ifptr);
+  //Check if blend is operation and will read in second input file
+  if (opval == 12) {
+    FILE* i2fptr = fopen(argv[4], "r");
+    if (i2fptr == NULL) {
+      printf("Specified input file could not be opened.\n");
+      return 2;
+    }
 
+    Image * inputIm2 = read_ppm(i2fptr);
+  }
+
+  //Reads in input file pixel data and generates image
+  Image * inputIm = read_ppm(ifptr);
+  if((*inputIm.rows == -1) && (*inputIm2.rows == -1)) {
+    printf("Specified input file is not a properly-formatted PPM.");
+    return 3;
+  }
   
   return 0;
 }

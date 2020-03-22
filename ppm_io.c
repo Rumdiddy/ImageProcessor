@@ -23,19 +23,30 @@ Image * read_ppm(FILE *fp) {
   char *magic;
   int colors;
 
+  //Checks if PPM file is properly formatted
   fscanf(fp, "%s %i %i %i", magic, col, row, colors);
-  assert(strlen(magic) == 2);
-  assert(magic[1] == '6' && magic[0] = 'P');
-  assert(colors == 255);
+  if(strlen(magic) != 2) {
+    *input.rows = -1;
+    return input;
+  } else if (magic[1] != '6' || magic[0] != 'P') {
+    *input.rows = -1;
+    return input;
+  } else if (colors != 255) {
+    *input.rows = -1;
+    return input;
+  }
 
+  //sets rows and columns
   Image *input;
   *input.rows = row;
   *input.cols = col;
   int size = row * col;
 
+  //reads in the pixel data (r,g,b)
   Pixel *dat = malloc(size * sizeof(Pixel));
   fread(dat, sizeof(Pixel), size, fp);
-   
+  *input.data = dat;
+  
   return input;  
 }
 
@@ -65,7 +76,7 @@ int write_ppm(FILE *fp, const Image *im) {
 }
 
 /* Checks the command line arguments and operation and ensures
- * that the correct arguments are provided.
+ * that the correct arguments are provided. Returns operation value.
  */
 int arg_check(int argc, char *argv[]) {
   //Checks for correct number of arguments
@@ -84,19 +95,19 @@ int arg_check(int argc, char *argv[]) {
   //Checks for the operation name
   int oper;
   if (strcmp(argv[3], "exposure") == 0) {
-    oper = 1;
+    oper = 11;
   } else if (strcmp(argv[3], "blend") == 0) {
-    oper = 2;
+    oper = 12;
   } else if (strcmp(argv[3], "zoom_in") == 0) {
-    oper = 3;
+    oper = 13;
   } else if (strcmp(argv[3], "zoom_out") == 0) {
-    oper = 4;
+    oper = 14;
   } else if (strcmp(argv[3], "pointilism") == 0) {
-    oper = 5;
+    oper = 15;
   } else if (strcmp(argv[3], "swirl") == 0) {
-    oper = 6;
+    oper = 16;
   } else if (strcmp(argv[3], "blur") == 0) {
-    oper = 7;
+    oper = 17;
   } else {
     printf("Operation name specified was invalid.\n");
     return 4;
@@ -127,11 +138,6 @@ int arg_check(int argc, char *argv[]) {
         printf("Arguments for specified operation were out of range.\n");
         return 6;
       }
-      FILE* i2fptr = fopen(argv[4], "r");
-      if (i2fptr == NULL) {
-        printf("Specified input file could not be opened.\n");
-        return 2;
-      }
       break;
     case 3: //zoom_in
       if (argc > 4) {
@@ -145,5 +151,5 @@ int arg_check(int argc, char *argv[]) {
         return 5;
       }
   }
-  return 0;
+  return oper;
 }

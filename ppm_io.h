@@ -49,6 +49,7 @@ int write_ppm(FILE *fp, const Image *im);
 
 /* Checks the input command line arguments and ensures
  * that they are correct for the operation provided.
+ * Returns the operation value 11-17.
  */
 int arg_check(int argc, char *argv[]);
 
