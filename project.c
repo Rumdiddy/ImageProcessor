@@ -29,6 +29,8 @@ int main (int argc, char *argv[]) {
     return 2;
   }
 
+  Image * inputIm2;
+  
   //Check if blend is operation and will read in second input file
   if (opval == 12) {
     FILE* i2fptr = fopen(argv[4], "r");
@@ -37,7 +39,7 @@ int main (int argc, char *argv[]) {
       return 2;
     }
 
-    Image * inputIm2 = read_ppm(i2fptr);
+    inputIm2 = read_ppm(i2fptr);
   }
 
   //Reads in input file pixel data and generates image
@@ -46,6 +48,9 @@ int main (int argc, char *argv[]) {
     printf("Specified input file is not a properly-formatted PPM.");
     return 3;
   }
+
+  //Generates empty output image to write into
+  Image * outputIm = gen_out(opval, inputIm, inputIm2);
   
   return 0;
 }
