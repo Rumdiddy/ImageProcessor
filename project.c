@@ -30,6 +30,15 @@ int main (int argc, char *argv[]) {
   }
 
   Image * inputIm2;
+
+  //Opens or creates output file for writing
+  File* ofptr;
+  ofptr = fopen(argv[2], "w");
+
+  if (ofptr == NULL) {
+    printf("Output file could not be opened.\n");
+    return 7;
+  }
   
   //Check if blend is operation and will read in second input file
   if (opval == 12) {
@@ -51,7 +60,24 @@ int main (int argc, char *argv[]) {
 
   //Generates empty output image to write into
   Image * outputIm = gen_out(opval, inputIm, inputIm2);
+
+  //TO DO: run function here based on opval
+
   
+  /*Writing output to file
+   *Pointilism changes the input array passed into it.
+   */
+  if (opval == 15) {
+    int outval = write_ppm(ofptr, inputIm);
+  } else {
+    int outval = write_ppm(ofptr, outputIm);
+  }
+
+  if (outval == -1) {
+    prinf("Writing output to file failed or invalid. \n");
+    return 7;
+  }
+    
   return 0;
 }
 

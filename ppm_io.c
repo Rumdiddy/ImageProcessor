@@ -70,6 +70,7 @@ int write_ppm(FILE *fp, const Image *im) {
 
   if (num_pixels_written != im->cols * im->rows) {
     fprintf(stderr, "Uh oh. Pixel data failed to write properly!\n");
+    return -1;
   }
 
   return num_pixels_written;
