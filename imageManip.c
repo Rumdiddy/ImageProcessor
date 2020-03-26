@@ -8,8 +8,9 @@
 //Implementation of the operation functions in imageManip.h
 
 #include "imageManip.h"
-
-#include <stdio.h> 
+#include "ppm_io.h"
+#include <stdio.h>
+#include <math.h>
 #include <stdlib.h>
 
 
@@ -17,19 +18,19 @@
 //and writes the altered pixel values to the output.
 void exposure(Image *input, Image *output, double factor){
 
-  int inputLength = (*input.rows) * (*input.cols); 
+  int inputLength = ((*input).rows) * ((*input).cols); 
   for (int i = 0; i < inputLength; i++){
-    (*(output -> data + i)).r = (*(input -> data + i)) * pow(2, factor);
-    (*(output -> data + i)).g = (*(input -> data + i)) * pow(2, factor);
-    (*(output -> data + i)).b = (*(input -> data + i)) * pow(2, factor);
+    (*(output -> data + i)).r = (*(input -> data + i)).r * pow(2, factor);
+    (*(output -> data + i)).g = (*(input -> data + i)).g * pow(2, factor);
+    (*(output -> data + i)).b = (*(input -> data + i)).b * pow(2, factor);
 
   }
 }
 
 //Performs blending of two image files by a certain factor              
-void blend(Image *imput1, Image *input2, Image *output, double factor ){
+void blend(Image *input1, Image *input2, Image *output, double factor ){
 
-  int outputLength = (*output.rows) * (*output.cols);
+  int outputLength = (output->rows) * (output->cols);
 
   int rowTracker = 1; //what row you are in 
   int colTracker = 1; //what col you are in 
@@ -73,7 +74,7 @@ void blend(Image *imput1, Image *input2, Image *output, double factor ){
      
     //tracks the row
     colTracker++;
-    if (colTracker == (*output.cols)){
+    if (colTracker == (output->cols)){
       colTracker = 1;
       rowTracker++; 
     }
@@ -85,26 +86,25 @@ void blend(Image *imput1, Image *input2, Image *output, double factor ){
 //and produces an output image 4 times the area.
 void zoomIN(Image *input, Image *output){
 
-  int inputLength = (*input.rows) * (*input.cols);
-  int outind = 0;
+  int inputLength = (input->rows) * (input->cols);
   int rowskip = 0;
   
   //Iterates through the output and input image.
   for (int i = 0; i < inputLength; i++){ 
     for (int j = 0; j < 4; j++){
       if (j > 1){
-        (*(output -> data + (rowskip * (*input.cols)) + (2 * i) + (*input.cols) + (j - 2))).r = *(input -> data + i).r;
-        (*(output -> data + (rowskip * (*input.cols)) + (2 * i) + (*input.cols) + (j - 2))).g = *(input -> data + i).g;
-        (*(output -> data + (rowskip * (*input.cols)) + (2 * i) + (*input.cols) + (j - 2))).b = *(input -> data + i).b;
+        (*(output -> data + (rowskip * (input->cols)) + (2 * i) + (input->cols) + (j - 2))).r = (*(input -> data + i)).r;
+        (*(output -> data + (rowskip * (input->cols)) + (2 * i) + (input->cols) + (j - 2))).g = (*(input -> data + i)).g;
+        (*(output -> data + (rowskip * (input->cols)) + (2 * i) + (input->cols) + (j - 2))).b = (*(input -> data + i)).b;
       } else {
-      (*(output -> data + (rowskip * (*input.cols)) + (2 * i) +j).r = *(input -> data + i)).r;
-      (*(output -> data + (rowskip * (*input.cols)) + (2 * i) +j).g = *(input -> data + i)).g;
-      (*(output -> data + (rowskip * (*input.cols)) + (2 * i) +j).b = *(input -> data + i)).b;
+	(*(output -> data + (rowskip * (input->cols)) + (2 * i) +j)).r = (*(input -> data + i)).r;
+	(*(output -> data + (rowskip * (input->cols)) + (2 * i) +j)).g = (*(input -> data + i)).g;
+	(*(output -> data + (rowskip * (input->cols)) + (2 * i) +j)).b = (*(input -> data + i)).b;
       }
     }
     
     //allows for the second row to be skipped each time
-    if ((i % (*input.cols)) == ((*input.cols) - 1)) {
+    if ((i % (input->cols)) == ((input->cols) - 1)) {
       rowskip++;
     }
   }
@@ -114,21 +114,20 @@ void zoomIN(Image *input, Image *output){
 void zoomOUT(Image * input, Image *output){
 
   int rowskip = 0; 
-  int outputLength = (*output.rows) * (*output.cols);
+  int outputLength = (output->rows) * (output->cols);
   
   //Loops through each pixel and condenses the average of 4 pixels into one pixel for color
   for (int i = 0 ; i < outputLength; i++) {
     
-    (*(output -> data + i)).r = ((*(input -> (data + (2 * i) + rowskip))).r + (*(data + (2 * i) + 1 + rowskip)).r + (*(data + (2 * i) + (*input.cols) + rowskip)).r + (*(data + (2 * i) + (*input.cols) + 1 + rowskip)).r) / 4;
+    (*(output -> data + i)).r = ((*((input->data) + (2 * i) + rowskip)).r + (*((input->data) + (2 * i) + 1 + rowskip)).r + (*((input->data) + (2 * i) + (input->cols) + rowskip)).r + (*((input->data) + (2 * i) + (input->cols) + 1 + rowskip)).r) / 4;
 
-    (*(output -> data + i)).g =((*(input -> (data + (2 * i) + rowskip))).g +(*(data + (2 * i) + 1 + rowskip)).g + (*(data + (2 * i) + (*input.cols) + rowskip)).g + (*(data + (2 * i) + (*input.cols) + 1 + rowskip).g)) / 4;
+    (*(output -> data + i)).g = ((*((input->data) + (2 * i) + rowskip)).g + (*((input->data) + (2 * i) + 1 + rowskip)).g + (*((input->data) + (2 * i) + (input->cols) + rowskip)).g + (*((input->data) + (2 * i) + (input->cols) + 1 + rowskip)).g) / 4;
 
-    (*(output -> data + i)).b = ((*(input -> (data + (2 * i) + rowskip))).b + (*(data + (2 * i) + 1 + rowskip)).b + (*(data + (2 * \
-															       i) + (*input.cols) + rowskip)).b + (*(data + (2 * i) + (*input.cols) + 1 + rowskip).b)) / 4;
+    (*(output -> data + i)).b = ((*((input->data) + (2 * i) + rowskip)).b + (*((input->data) + (2 * i) + 1 + rowskip)).b + (*((input->data) + (2 * i) + (input->cols) + rowskip)).b + (*((input->data) + (2 * i) + (input->cols) + 1 + rowskip)).b) / 4;
     
     //allows for the second row to be skipped each time
-    if (i % (*output.cols) = (*output.cols) - 1){
-      rowskip = rowskip + (*input.cols); 
+    if (i % (output->cols) == (output->cols) - 1){
+      rowskip = rowskip + (input->cols); 
     }
   }
 }
@@ -144,6 +143,7 @@ void pointilism(Image *input){
   int rand_x;
   int rand_y;
   int rand_rad;
+  int numCols = (input -> cols);
   
   for (int i = 0; i <numPixelTransform; i++){
 
@@ -159,11 +159,9 @@ void pointilism(Image *input){
 
 	//if (x - a)^2 + (y - b)^2 <= radius^2, then perform transformation
 	if (pow((rand_x - j), 2) + pow((rand_y - k), 2) <=rand_rad) {
-	  ((input -> (data + (numCols * k) + j)) -> r) -> data = ((input -> (data + (numCols * rand_y) + rand_x)) -> r);
-	  ((input -> (data + (numCols * k) + j)) -> g) -> data = ((input -> (data + (numCols * rand_y) + rand_x\
-)) -> g);
-	  ((input -> (data + (numCols * k) + j)) -> b) -> data = ((input -> (data + (numCols * rand_y) + rand_x\
-)) -> b);
+	  (((input->data) + (numCols * k) + j) -> r) = (((input->data) + (numCols * rand_y) + rand_x) -> r);
+	  (((input->data) + (numCols * k) + j) -> g) = (((input->data) + (numCols * rand_y) + rand_x) -> g);
+	  (((input->data) + (numCols * k) + j) -> b) = (((input->data) + (numCols * rand_y) + rand_x) -> b);
 	}	
       }
     }

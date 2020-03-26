@@ -10,7 +10,7 @@
 #include "ppm_io.h"
 #include <string.h>
 #include <stdio.h>
-
+#include <stdlib.h>
 
 /* Read a PPM-formatted image from a file (assumes fp != NULL).
  * Returns the address of the heap-allocated Image struct it
@@ -22,9 +22,10 @@ Image * read_ppm(FILE *fp) {
   int row;
   char *magic;
   int colors;
+  Image * input;
 
   //Checks if PPM file is properly formatted
-  fscanf(fp, "%s %i %i %i", magic, col, row, colors);
+  fscanf(fp, "%s %i %i %i", magic, &col, &row, &colors);
   if(strlen(magic) != 2) {
     (*input).rows = -1;
     return input;
@@ -37,15 +38,13 @@ Image * read_ppm(FILE *fp) {
   }
 
   //sets rows and columns
-  Image *input;
   (*input).rows = row;
   (*input).cols = col;
   int size = row * col;
 
   //reads in the pixel data (r,g,b)
-  Pixel *dat = malloc(size * sizeof(Pixel));
-  fread(dat, sizeof(Pixel), size, fp);
-  (*input).data = dat;
+  (*input).data = malloc(size * sizeof(Pixel));
+  fread((*input).data, sizeof(Pixel), size, fp);
   
   return input;  
 }
@@ -166,14 +165,12 @@ Image * gen_out(int oper, Image *input1, Image *input2) {
   int rows2 = (*input2).rows;
   int cols2 = (*input2).cols;
 
-  Pixel *emptdat;
   Image *output;
   int osize;
 
   switch (oper) {
     case 11:  //exposure
-      emptdat = malloc(size1 * sizeof(Pixel)); 
-      (*output).data = emptdat;
+      (*output).data = malloc(size1 * sizeof(Pixel)); 
       (*output).rows = rows1;
       (*output).cols = cols1;
       break;
@@ -193,23 +190,19 @@ Image * gen_out(int oper, Image *input1, Image *input2) {
       }
 
       osize = (*output).cols * (*output).rows;
-      emptdat = malloc(osize * sizeof(Pixel));
-      (*output).data = emptdat;
+      (*output).data = malloc(osize * sizeof(Pixel));
       break;
     case 13:  //zoom_in
-      emptdat = malloc(4 * size1 * sizeof(Pixel));
-      (*output).data = emptdat;
+      (*output).data = malloc(4 * size1 * sizeof(Pixel));
       (*output).rows = (2 * rows1);
       (*output).cols = (2 * cols1);
       break;
     case 14:  //zoom_out
-      emptdat = malloc((1.0/4.0) * size1 * sizeof(Pixel));
-      (*output).data = emptdat;
+      (*output).data = malloc((1.0/4.0) * size1 * sizeof(Pixel));
       (*output).rows = (0.5 * rows1);
       (*output).cols = (0.5 * cols1);
       break;
-    case 15:  //pointilism
-      //TO-DO
+    case 15:  //pointilism modifies input image
       break;
     case 16:  //swirl
       //TO-DO

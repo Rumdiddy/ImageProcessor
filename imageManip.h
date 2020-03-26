@@ -5,6 +5,7 @@
 
 //imageManip.h
 //Headerfile for all the operations functions
+#include "ppm_io.h"
 
 //performs exposure functin on input image
 //returns output image pointer. 
@@ -21,5 +22,5 @@ void zoomOUT(Image * input, Image *output);
 void blend(Image *imput1, Image *input2, Image *output, double factor ); 
 
 //performs in-place pointilism transformation
-void pointilism(Image *input);s
+void pointilism(Image *input);
   

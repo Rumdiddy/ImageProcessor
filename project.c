@@ -32,7 +32,7 @@ int main (int argc, char *argv[]) {
   Image * inputIm2;
 
   //Opens or creates output file for writing
-  File* ofptr;
+  FILE* ofptr;
   ofptr = fopen(argv[2], "w");
 
   if (ofptr == NULL) {
@@ -49,6 +49,7 @@ int main (int argc, char *argv[]) {
     }
 
     inputIm2 = read_ppm(i2fptr);
+    fclose(i2fptr);
   }
 
   //Reads in input file pixel data and generates image
@@ -62,22 +63,27 @@ int main (int argc, char *argv[]) {
   Image * outputIm = gen_out(opval, inputIm, inputIm2);
 
   //TO DO: run function here based on opval
-
+  exposure(inputIm, outputIm, (*argv[4]));
   
   /*Writing output to file
    *Pointilism changes the input array passed into it.
    */
+  int outval;
   if (opval == 15) {
-    int outval = write_ppm(ofptr, inputIm);
+    outval = write_ppm(ofptr, inputIm);
   } else {
-    int outval = write_ppm(ofptr, outputIm);
+    outval = write_ppm(ofptr, outputIm);
   }
 
   if (outval == -1) {
-    prinf("Writing output to file failed or invalid. \n");
+    printf("Writing output to file failed or invalid. \n");
     return 7;
   }
-    
+
+  fclose(ifptr);
+  fclose(ofptr);
+  free((*inputIm).data);
+  free((*outputIm).data);
   return 0;
 }
 
