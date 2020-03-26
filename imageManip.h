@@ -20,3 +20,6 @@ void zoomOUT(Image * input, Image *output);
 //Performs blending of two image files by a certain factor
 void blend(Image *imput1, Image *input2, Image *output, double factor ); 
 
+//performs in-place pointilism transformation
+void pointilism(Image *input);s
+  

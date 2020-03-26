@@ -9,6 +9,10 @@
 
 #include "imageManip.h"
 
+#include <stdio.h> 
+#include <stdlib.h>
+
+
 //implementation of the exposure function which modifies the exposure of the input image 
 //and writes the altered pixel values to the output.
 void exposure(Image *input, Image *output, double factor){
@@ -130,4 +134,38 @@ void zoomOUT(Image * input, Image *output){
 }
 
 
+//performs in-place pointilism transformation
+void pointilism(Image *input){
 
+  //will this below line work?
+  //determines 3% of pixels to be transformed
+  int numPixelTransform = (input -> rows) * (input -> cols) * .03;
+
+  int rand_x;
+  int rand_y;
+  int rand_rad;
+  
+  for (int i = 0; i <numPixelTransform; i++){
+
+    //selects rand x, y, and radius coordinates for circle
+    rand_x = rand() % (input -> cols);
+    rand_y = rand() % (input -> rows);
+    rand_rad = rand() % 5 + 1;
+
+    //equation of filled circle:  (x - a)^2 + (y - b)^2 <= radius^2
+    //iterates through all possible values of a (in this case j) and b (in this case k)
+    for (int j = rand_x - rand_rad; j<= rand_x + rand_rad; j++) {
+      for (int k = rand_y - rand_rad; k<= rand_y + rand_rad; k++) {
+
+	//if (x - a)^2 + (y - b)^2 <= radius^2, then perform transformation
+	if (pow((rand_x - j), 2) + pow((rand_y - k), 2) <=rand_rad) {
+	  ((input -> (data + (numCols * k) + j)) -> r) -> data = ((input -> (data + (numCols * rand_y) + rand_x)) -> r);
+	  ((input -> (data + (numCols * k) + j)) -> g) -> data = ((input -> (data + (numCols * rand_y) + rand_x\
+)) -> g);
+	  ((input -> (data + (numCols * k) + j)) -> b) -> data = ((input -> (data + (numCols * rand_y) + rand_x\
+)) -> b);
+	}	
+      }
+    }
+  }
+}
