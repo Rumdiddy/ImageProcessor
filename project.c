@@ -22,18 +22,18 @@ int main (int argc, char *argv[]) {
   
   //Opens input file for reading
   FILE* ifptr;
-  ifptr = fopen(argv[1], "r");
+  ifptr = fopen(argv[1], "rb");
 
   if (ifptr == NULL) {
     printf("Specified input file could not be opened.\n");
     return 2;
   }
 
-  Image * inputIm2;
+  Image * inputIm2 = malloc(sizeof(Image));
 
   //Opens or creates output file for writing
   FILE* ofptr;
-  ofptr = fopen(argv[2], "w");
+  ofptr = fopen(argv[2], "wb");
 
   if (ofptr == NULL) {
     printf("Output file could not be opened.\n");
@@ -42,7 +42,7 @@ int main (int argc, char *argv[]) {
   
   //Check if blend is operation and will read in second input file
   if (opval == 12) {
-    FILE* i2fptr = fopen(argv[4], "r");
+    FILE* i2fptr = fopen(argv[4], "rb");
     if (i2fptr == NULL) {
       printf("Specified input file could not be opened.\n");
       return 2;
@@ -58,18 +58,19 @@ int main (int argc, char *argv[]) {
     printf("Specified input file is not a properly-formatted PPM.");
     return 3;
   }
-
+  fclose(ifptr);
+  
   //Generates empty output image to write into
   Image * outputIm = gen_out(opval, inputIm, inputIm2);
-
+  
   //TO DO: run function here based on opval
-  exposure(inputIm, outputIm, (*argv[4]));
+  exposure(inputIm, strtod((argv[4]), NULL));
   
   /*Writing output to file
    *Pointilism changes the input array passed into it.
    */
   int outval;
-  if (opval == 15) {
+  if (opval == 15 || opval == 11) {
     outval = write_ppm(ofptr, inputIm);
   } else {
     outval = write_ppm(ofptr, outputIm);
@@ -79,9 +80,10 @@ int main (int argc, char *argv[]) {
     printf("Writing output to file failed or invalid. \n");
     return 7;
   }
-
-  fclose(ifptr);
-  fclose(ofptr);
+  
+  free(inputIm);
+  free(inputIm2);
+  free(outputIm);
   free((*inputIm).data);
   free((*outputIm).data);
   return 0;

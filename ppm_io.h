@@ -58,4 +58,7 @@ int arg_check(int argc, char *argv[]);
  */
 Image * gen_out(int oper, Image *input1, Image *input2);
 
+//Checks value by value whether rgb values overflow 255
+unsigned char overflowcheck(double rgb);
+
 #endif

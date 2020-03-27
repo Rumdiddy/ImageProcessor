@@ -1,4 +1,3 @@
-
 //Samuel Jin
 //Ajay Ananthakrishnan
 //sjin16
@@ -15,14 +14,20 @@
 
 
 //implementation of the exposure function which modifies the exposure of the input image 
-//and writes the altered pixel values to the output.
-void exposure(Image *input, Image *output, double factor){
+//and writes the altered pixel values to the passed image.
+void exposure(Image *input, double factor){
 
-  int inputLength = ((*input).rows) * ((*input).cols); 
+  int inputLength = ((*input).rows) * ((*input).cols);
+  double value;
   for (int i = 0; i < inputLength; i++){
-    (*(output -> data + i)).r = (*(input -> data + i)).r * pow(2, factor);
-    (*(output -> data + i)).g = (*(input -> data + i)).g * pow(2, factor);
-    (*(output -> data + i)).b = (*(input -> data + i)).b * pow(2, factor);
+    value = input->data[i].r * pow(2, factor);
+    input->data[i].r = overflowcheck(value);
+    
+    value = input->data[i].g * pow(2, factor);
+    input->data[i].g = overflowcheck(value);
+
+    value = input->data[i].b * pow(2, factor);
+    input->data[i].b = overflowcheck(value);
 
   }
 }

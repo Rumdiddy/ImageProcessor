@@ -9,7 +9,7 @@
 
 //performs exposure functin on input image
 //returns output image pointer. 
-void exposure(Image *input, Image *output, double factor);
+void exposure(Image *input, double factor);
 
 //Performs zoomin function on the provided image
 //writes output into empty output image.
@@ -23,4 +23,4 @@ void blend(Image *imput1, Image *input2, Image *output, double factor );
 
 //performs in-place pointilism transformation
 void pointilism(Image *input);
-  
+ 

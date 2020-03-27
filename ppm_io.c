@@ -20,10 +20,21 @@ Image * read_ppm(FILE *fp) {
   assert(fp); 
   int col;
   int row;
-  char *magic;
+  char magic[3];
   int colors;
-  Image * input;
+  Image * input = malloc(sizeof(Image));
 
+  
+  //Skips over comment lines or new lines until EOF
+  /* char n = '#'; */
+  /* while (n == '#') { */
+  /*   n = fgetc(fp); */
+  /*   while (n != '\n' && n!= EOF) { */
+  /*   } */
+  /* } */
+  /* ungetc(n, fp); */
+
+  
   //Checks if PPM file is properly formatted
   fscanf(fp, "%s %i %i %i", magic, &col, &row, &colors);
   if(strlen(magic) != 2) {
@@ -41,9 +52,12 @@ Image * read_ppm(FILE *fp) {
   (*input).rows = row;
   (*input).cols = col;
   int size = row * col;
-
-  //reads in the pixel data (r,g,b)
+  
+  //Reads in pixel data
+  
   (*input).data = malloc(size * sizeof(Pixel));
+  char c = fgetc(fp);
+
   fread((*input).data, sizeof(Pixel), size, fp);
   
   return input;  
@@ -154,6 +168,16 @@ int arg_check(int argc, char *argv[]) {
   return oper;
 }
 
+//Checks if the rgb values overflow past 255;
+unsigned char overflowcheck(double rgb) {
+  if (rgb > 255 || rgb < 0) {
+    return 255;
+  } else {
+    return (unsigned char)rgb;
+  }
+}
+
+
 /* Generates output image to be filled. It determines
  * the output image size based on the operation specified.
  */
@@ -165,15 +189,10 @@ Image * gen_out(int oper, Image *input1, Image *input2) {
   int rows2 = (*input2).rows;
   int cols2 = (*input2).cols;
 
-  Image *output;
+  Image *output = malloc(sizeof(Image));
   int osize;
 
   switch (oper) {
-    case 11:  //exposure
-      (*output).data = malloc(size1 * sizeof(Pixel)); 
-      (*output).rows = rows1;
-      (*output).cols = cols1;
-      break;
     case 12:  //blend
       //checks for largest rows
       if (rows1 > rows2) {
