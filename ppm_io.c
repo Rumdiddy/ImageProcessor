@@ -23,27 +23,30 @@ Image * read_ppm(FILE *fp) {
   char magic[3];
   int colors;
   Image * input = malloc(sizeof(Image));
-
-  
-  //Skips over comment lines or new lines until EOF
-  /* char n = '#'; */
-  /* while (n == '#') { */
-  /*   n = fgetc(fp); */
-  /*   while (n != '\n' && n!= EOF) { */
-  /*   } */
-  /* } */
-  /* ungetc(n, fp); */
-
+  char n;
   
   //Checks if PPM file is properly formatted
-  fscanf(fp, "%s %i %i %i", magic, &col, &row, &colors);
+  fscanf(fp, "%s ", magic);
   if(strlen(magic) != 2) {
     (*input).rows = -1;
     return input;
   } else if (magic[1] != '6' || magic[0] != 'P') {
     (*input).rows = -1;
     return input;
-  } else if (colors != 255) {
+  }
+
+  //Checks for comment after P6
+  char * line = NULL;
+  int len = 0;
+  n = fgetc(fp);
+  if (n == '#') {
+    getline(&line, &len, fp);
+  } else {
+    ungetc(n,fp);
+  }
+  
+  fscanf(fp, "%i %i %i", &col, &row, &colors);
+  if (colors != 255) {
     (*input).rows = -1;
     return input;
   }
@@ -54,9 +57,8 @@ Image * read_ppm(FILE *fp) {
   int size = row * col;
   
   //Reads in pixel data
-  
   (*input).data = malloc(size * sizeof(Pixel));
-  char c = fgetc(fp);
+  fgetc(fp);
 
   fread((*input).data, sizeof(Pixel), size, fp);
   

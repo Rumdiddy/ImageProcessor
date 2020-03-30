@@ -29,9 +29,7 @@ int main (int argc, char *argv[]) {
     return 2;
   }
 
-  Image * inputIm2 = malloc(sizeof(Image));
-
-  //Opens or creates output file for writing
+    //Opens or creates output file for writing
   FILE* ofptr;
   ofptr = fopen(argv[2], "wb");
 
@@ -39,7 +37,8 @@ int main (int argc, char *argv[]) {
     printf("Output file could not be opened.\n");
     return 7;
   }
-  
+
+  Image * inputIm2 = malloc(sizeof(Image));
   //Check if blend is operation and will read in second input file
   if (opval == 12) {
     FILE* i2fptr = fopen(argv[4], "rb");
@@ -47,7 +46,6 @@ int main (int argc, char *argv[]) {
       printf("Specified input file could not be opened.\n");
       return 2;
     }
-
     inputIm2 = read_ppm(i2fptr);
     fclose(i2fptr);
   }
@@ -59,13 +57,12 @@ int main (int argc, char *argv[]) {
     return 3;
   }
   fclose(ifptr);
-  
+    
   //Generates empty output image to write into
   Image * outputIm = gen_out(opval, inputIm, inputIm2);
-  
+
   //TO DO: run function here based on opval
-  exposure(inputIm, strtod((argv[4]), NULL));
-  
+    
   /*Writing output to file
    *Pointilism changes the input array passed into it.
    */
@@ -83,9 +80,8 @@ int main (int argc, char *argv[]) {
   
   free(inputIm);
   free(inputIm2);
-  free(outputIm);
-  free((*inputIm).data);
-  free((*outputIm).data);
+  //  free(outputIm);
+   
   return 0;
 }
 
