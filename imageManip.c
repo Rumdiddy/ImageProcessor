@@ -98,13 +98,13 @@ void zoomIN(Image *input, Image *output){
   for (int i = 0; i < inputLength; i++){ 
     for (int j = 0; j < 4; j++){
       if (j > 1){
-        (*(output -> data + (rowskip * (output->cols)) + (2 * i) + (output->cols) + (j - 2))).r = input->data[i].r;
-        (*(output -> data + (rowskip * (output->cols)) + (2 * i) + (output->cols) + (j - 2))).g = input->data[i].g;
-        (*(output -> data + (rowskip * (output->cols)) + (2 * i) + (output->cols) + (j - 2))).b = input->data[i].b;
+        output->data[(rowskip * (output->cols)) + (2 * i) + (output->cols) + (j - 2)].r = input->data[i].r;
+	output->data[(rowskip * (output->cols)) + (2 * i) + (output->cols) + (j - 2)].g = input->data[i].g;
+	output->data[(rowskip * (output->cols)) + (2 * i) + (output->cols) + (j - 2)].b = input->data[i].b;
       } else {
-	(*(output -> data + (rowskip * (output->cols)) + (2 * i) +j)).r = input->data[i].r;
-	(*(output -> data + (rowskip * (output->cols)) + (2 * i) +j)).g = input->data[i].g;
-	(*(output -> data + (rowskip * (output->cols)) + (2 * i) +j)).b = input->data[i].b;
+	output->data[(rowskip * (output->cols)) + (2 * i) + j].r = input->data[i].r;
+	output->data[(rowskip * (output->cols)) + (2 * i) + j].g = input->data[i].g;
+	output->data[(rowskip * (output->cols)) + (2 * i) + j].b = input->data[i].b;
       }
     }
     

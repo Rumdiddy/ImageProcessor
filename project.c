@@ -62,7 +62,7 @@ int main (int argc, char *argv[]) {
   Image * outputIm = gen_out(opval, inputIm, inputIm2);
 
   //TO DO: run function here based on opval
-    
+   
   /*Writing output to file
    *Pointilism changes the input array passed into it.
    */
