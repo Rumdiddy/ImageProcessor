@@ -57,12 +57,48 @@ int main (int argc, char *argv[]) {
     return 3;
   }
   fclose(ifptr);
+
+  //Further checks arguments provided for swirl
+  int cx;
+  int cy;
+  int strength;
+  if (opval == 16) {
+    if (atoi(argv[4]) < 0 || atoi(argv[4]) > (inputIm->cols)) {
+      printf("Arguments for specified operation were out of range.\n");
+      return 6;
+    } else if (atoi(argv[5]) < 0 || atoi(argv[5]) > (inputIm->rows)) {
+      printf("Arguments for specified operation were out of range.\n");
+      return 6;
+    } else {
+      cx = atoi(argv[4]);
+      cy = atoi(argv[5]);
+      strength = atoi(argv[6]);
+    }
+  }
+
+  //Generates factor for functions
+  double factor;
+  switch (opval) {
+  case 11:
+    factor = strtof(argv[4], NULL);
+    break;
+  case 12:
+    factor = strtof(argv[5], NULL);
+    break;
+  case 17:
+    factor = strtod(argv[4], NULL);
+    break;
+  }
     
   //Generates empty output image to write into
   Image * outputIm = gen_out(opval, inputIm, inputIm2);
 
-  //TO DO: run function here based on opval
-   
+  //Run function here based on opval
+  frun(opval, inputIm, inputIm2, outputIm, factor);
+  if (opval == 16) { //swirl
+    swirl(inputIm, outputIm, cx, cy, strength);
+  }
+  
   /*Writing output to file
    *Pointilism changes the input array passed into it.
    */
@@ -80,7 +116,7 @@ int main (int argc, char *argv[]) {
   
   free(inputIm);
   free(inputIm2);
-  //  free(outputIm);
+  free(outputIm);
    
   return 0;
 }

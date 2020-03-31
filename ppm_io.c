@@ -11,6 +11,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "imageManip.h"
+#include <limits.h>
 
 /* Read a PPM-formatted image from a file (assumes fp != NULL).
  * Returns the address of the heap-allocated Image struct it
@@ -131,45 +133,100 @@ int arg_check(int argc, char *argv[]) {
 
   //Check for correct operation arguments
   switch (oper) {
-    case 1: //exposure
-      if (strtof(argv[4], NULL) == 0.0F && *argv[4] != 48) {
-        printf("Argument for specified operation were senseless.\n");
-        return 6;
-      } else if (strtof(argv[4], NULL) > 3 || strtof(argv[4], NULL) < -3) {
-        printf("Arguments for specified operation were out of range.\n");
-        return 6;
-      } else if (argc > 5) {
-        printf("Incorrect number of arguments for specified operation.\n");
-        return 5;
-      }
+  case 11: //exposure
+    if (strtof(argv[4], NULL) == 0.0F && *argv[4] != 48) {
+      printf("Arguments for specified operation were senseless.\n");
+      return 6;
+    } else if (strtof(argv[4], NULL) > 3 || strtof(argv[4], NULL) < -3) {
+      printf("Arguments for specified operation were out of range.\n");
+      return 6;
+    } else if (argc > 5) {
+      printf("Incorrect number of arguments for specified operation.\n");
+      return 5;
+    }
       break;
-    case 2: //blend 
-      if (argc > 6) {
-        printf("Incorrect number of arguments for specified operation.\n");
-        return 5;
-      } else if (strtof(argv[5], NULL) == 0.0F && *argv[5] != 48) {
-        printf("Argument for specified operation were senseless.\n");
-        return 6;
-      } else if (strtof(argv[5], NULL) > 1 || strtof(argv[5], NULL) < 0) {
-        printf("Arguments for specified operation were out of range.\n");
-        return 6;
-      }
-      break;
-    case 3: //zoom_in
-      if (argc > 4) {
-        printf("Incorrect number of arguments for specified operation.\n");
-        return 5;
-      }
-      break;
-    case 4: //zoom_out
-      if (argc >4) {
-        printf("Incorrect number of arguments for specified operation.\n");
-        return 5;
-      }
+  case 12: //blend 
+    if (argc > 6) {
+      printf("Incorrect number of arguments for specified operation.\n");
+      return 5;
+    } else if (strtof(argv[5], NULL) == 0.0F && *argv[5] != 48) {
+      printf("Arguments for specified operation were senseless.\n");
+      return 6;
+    } else if (strtof(argv[5], NULL) > 1 || strtof(argv[5], NULL) < 0) {
+      printf("Arguments for specified operation were out of range.\n");
+      return 6;
+    }
+    break;
+  case 13: //zoom_in
+    if (argc > 4) {
+      printf("Incorrect number of arguments for specified operation.\n");
+      return 5;
+    }
+    break;
+  case 14: //zoom_out
+    if (argc > 4) {
+      printf("Incorrect number of arguments for specified operation.\n");
+      return 5;
+    }
+    break;
+  case 15: //pointilism
+    if (argc > 4) {
+      printf("Incorrect number of arguments for specified operation.\n");
+      return 5;
+    }
+    break;
+  case 16: //swirl
+    if (argc > 7 || argc < 7) {
+      printf("Incorrect number of arguments for specified operation.\n");
+      return 5;
+    } else if (atoi(argv[6]) == 0 && *argv[6] != 48) {
+      printf("Arguments for specified operation were senseless.\n");
+      return 6;
+    } else if (strtol(argv[6], NULL, 0) < 1 || strtol(argv[6], NULL, 0) > INT_MAX) {
+      printf("Argument for specified operation was out of range.\n");
+      return 6;
+    }
+    break;
+  case 17: //blur
+    if (argc > 5 || argc < 5) {
+      printf("Incorrect number of arguments for specified operation.\n");
+      return 5;
+    } else if (strtod(argv[4], NULL) == 0.0 && *argv[4] != 48) {
+      printf("Arguments for specified operation were senseless.\n");
+      return 6;
+    } else if (strtod(argv[4], NULL) < 0) {
+      printf("Argument for specified operation was out of range.\n");
+      return 6;
+    }
+    break;
   }
   return oper;
 }
 
+//Chooses the correct function to run.
+void frun(int operval, Image * input1, Image * input2, Image * output, double factor) {
+  switch(operval) {
+  case 11: //exposure
+    exposure(input1, factor);
+    break;
+  case 12: //blend
+    blend(input1, input2, output, factor);
+    break;
+  case 13: //zoom_in
+    zoomIN(input1, output);
+    break;
+  case 14: //zoom_out
+    zoomOUT(input1, output);
+    break;
+  case 15: //pointilism
+    pointilism(input1);
+    break;
+  case 17: //blur
+    blur(input1, output, factor);
+    break;
+  }
+}
+  
 //Checks if the rgb values overflow past 255;
 unsigned char overflowcheck(double rgb) {
   if (rgb > 255 || rgb < 0) {
@@ -178,7 +235,6 @@ unsigned char overflowcheck(double rgb) {
     return (unsigned char)rgb;
   }
 }
-
 
 /* Generates output image to be filled. It determines
  * the output image size based on the operation specified.
@@ -223,13 +279,15 @@ Image * gen_out(int oper, Image *input1, Image *input2) {
       (*output).rows = (0.5 * rows1);
       (*output).cols = (0.5 * cols1);
       break;
-    case 15:  //pointilism modifies input image
-      break;
     case 16:  //swirl
-      //TO-DO
+      (*output).data = malloc(size1 * sizeof(Pixel));
+      (*output).rows = (rows1);
+      (*output).cols = (cols1);
       break;
     case 17:  //blur
-      //TO-DO
+      (*output).data = malloc(size1 * sizeof(Pixel));
+      (*output).rows = (rows1);
+      (*output).cols = (cols1);
       break;
   }  
   return output;
