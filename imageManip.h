@@ -23,4 +23,6 @@ void blend(Image *imput1, Image *input2, Image *output, double factor );
 
 //performs in-place pointilism transformation
 void pointilism(Image *input);
- 
+
+//performs swirl function
+void swirl(Image * input, Image *output, int cX, int cY, int distortScale);

@@ -173,3 +173,52 @@ void pointilism(Image *input){
     }
   }
 }
+
+//performs swirl function                                                      
+void swirl(Image * input, Image *output, int cX, int cY, int distortScale){
+
+  double alpha;
+
+  //(xSwColNum, ySwRowNum) initially set to (1,1)
+  int xSwColNum = 1;   //column in input image
+  int ySwRowNum = 1;   //row in input image
+
+  int xOrigColNum; 
+  int yOrigRowNum;
+
+  int inputLength = (input -> rows) * (input -> cols);
+
+  int numCols = (input -> cols);
+  int numRows = (input -> rows);
+
+  while (ySwRowNum <= numRows) {   //while you aren't at the end of the image
+
+    alpha = sqrt(((pow(xSwColNum - cX, 2) + pow(ySwRolNum - cY, 2)) / distortScale));
+
+    //gets corresponding coordinates from original input image: (xOrigColNum, yOrigRowNum)
+    xOrigColNum = (xSwColNum - cX) * cos(alpha) - (ySwRowNum - cY) * sin(alpha) + cX;
+    yOrigRowNum	= (xSwColNum - cX) * sin(alpha)	+ (ySwRowNum - cY) * cos(alpha)	+ cY;
+
+    //if (xOrigColNum, yOrigRowNum) coordinates are out of bounds, make corresponding swirl pixel black
+    if (xOrigColNum < 1 || xOrigColNum > numCols || yOrigRowNum < 1 || yOrigRowNum > numRows) {
+      output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].r = 0;
+      output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].g = 0;
+      output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].b = 0; 
+    }
+
+    //copy over original pixel color values to corresponding swirl pixel 
+    else {
+    output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].r = input->data[(yOrigRowNum - 1) * numCols + xOrigColNum - 1].r;
+    output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].g = input->data[(yOrigRowNum - 1) * numCols + xOrigColNum - 1].g;
+    output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].b = input->data[(yOrigRowNum - 1) * numCols + xOrigColNum - 1].b;
+    }
+
+    //update (xSwColNum, ySwRowNum) coordinates of swirl image
+    if (xSwColNum % numCols ==0) {
+      ySwRowNum++;
+      xSwColNum = 1; 
+    }
+    
+    xSwColNum++; 
+  }
+}
