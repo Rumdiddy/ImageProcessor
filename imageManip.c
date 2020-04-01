@@ -222,82 +222,79 @@ void swirl(Image * input, Image *output, int cX, int cY, int distortScale){
 
 void blur(Image * input, Image *output, double sigma){
 
-  double* matrixGenerate(sigma) {  //creates Gaussian matrix with sigma parameter
+  //creates Gaussian matrix with sigma parameter
+  int nDim;
+  int center;
+  int xCoor = 0;
+  int yCoor = 0;  
+  int dX;
+  int dY;
 
-    int nDim;
-    int center;
-    int xCoor = 1;
-    int yCoor = 1;
-
-    int dX;
-    int dY;
+  const double PI = 3.14159265358979323846;
+  //sigma = sigma + (fmod(sigma, 0.1));  //rounds sigma down 
   
-    const double PI = 3.1415926535; 
-  
-    sigma = sigma - (sigma % .1);  //rounds sigma down 
-
-    //code to determine dimensions of G. matrix
-    if ((sigma * 10) % 2 == 0) {
-      nDim = (sigma * 10) + 1;
-    }
-    else {
-      nDim = sigma * 10; 
-    }
-
-    double* matrix = malloc((nDim * nDim) * sizeof(double)); //initializes G. matrix
-
-    center = (nDim / 2) + 1; //if you hae a 5 by 5 matrix, the center will be (3,3)
-    
-    while (yCoor <= nDim) {
-      dX = abs(xCoor - center); //difference from center
-      dY = abs(yCoor - center);
-
-      matrix[(yCoor - 1) * nDim + xCoor - 1] = (1.0 / (2.0 * PI * pow(sigma, 2))) * exp( -(pow(dx, 2) + pow(dy, 2)) / (2 * pow(sigma, 2))); //gausian formula
-
-      if (xCoor == nDim) {
-	xCoor = 1;
-	yCoor++; 
-      }
-      else {
-	xCoor++; 
-      }
-    }
-
-    return matrix; 
+  //code to determine dimensions of G. matrix
+  if (fmod((sigma * 10), 2.0) == 0) {
+    nDim = (sigma * 10) + 1;
   }
-
+  else {
+    nDim = sigma * 10;
+  }
   
-  int imXCoor = 1;
-  int imYCoor = 1;
+  double * matrix = malloc((nDim * nDim) * sizeof(double)); //initializes G. matrix
+  
+  center = (nDim / 2); //if you hae a 5 by 5 matrix, the center will be (2,2)
+  
+  while (yCoor < nDim) {
+    dX = abs(xCoor - center); //difference from center
+    dY = abs(yCoor - center);
 
-  int matXCoor = - (nDim/2);
-  int matyCoor = - (nDim/2);
+    //Gaussian Formula
+    matrix[(yCoor * nDim) + xCoor] = (double)(1.0 / (2.0 * PI * pow(sigma, 2))) * exp(-((pow(dX, 2) + pow(dY, 2)) / (2.0 * pow(sigma, 2))));
+        
+    //Moves onto the next row
+    if (xCoor == (nDim - 1)) {
+      xCoor = 0;
+      yCoor++; 
+    } else {
+      xCoor++; 
+    }
+  }
+  
+  int imXCoor = 0;
+  int imYCoor = 0;
+  
+  int matXCoor = -(nDim/2);
+  int matYCoor = -(nDim/2);
 
-  int numCols = (output -> cols);
-
+  int numCols = (input->cols);
+  int numRows = (input->rows);
+  
   double weighted_sumR = 0;       //weightedSum vars for 3 color channels.
   double weighted_sumG = 0;
   double weighted_sumB = 0;
 
   double mat_sum = 0;
-  int output_pixel;     //is this supposed to be an int? 
 
-  double* matrix = matrixGenerate(sigma);       //pointer to Gaussian matrix. 
   
-  while (imYCoor <= nDim) {  //for every pixel in image
+  while (imYCoor < numRows) {  //for every pixel in image
 
-    while (matXCoor + matYCoor <= nDim) {//for every index in the Gaussian matrix   this works because the last index will be (nDim/2, nDim/2) which sums to nDim
-      if(imXCoor + matXCoor >= 1 && imXCoor + matXCoor <= nDim && imYCoor + matYCoor >= 1 && imYCoor + matYCoor <= nDim) {  //if matrix is inbounds with respect to image
+    //for every index in the Gaussian matrix. Works b/c last index: (nDim/2, nDim/2), sums to nDim
+    while (matXCoor + matYCoor <= nDim) {
 
-	weighted_sumR += matrix[matXCoor + nDim/2 + (matYCoor + nDim/2) * nDim] * input -> data[imXCoor + matXCoor  - 1 + ((imYCoor + matYCoor - 1) * numCols)].r; 
-        weighted_sumG += matrix[matXCoor + nDim/2 + (matYCoor + nDim/2) * nDim] * input -> data[imXCoor + matXCoor  - 1 + ((imYCoor + matYCoor - 1) * numCols)].g;
-        weighted_sumB += matrix[matXCoor + nDim/2 + (matYCoor + nDim/2) * nDim] * input -> data[imXCoor + matXCoor  - 1 + ((imYCoor + matYCoor - 1) * numCols)].b;
-
-	mat_sum += matrix[matXCoor + nDim/2 + (matYCoor + nDim/2) * nDim]; 
+      //if matrix is in bounds with respect to image
+      if(((imXCoor + matXCoor) >= 0) && ((imXCoor + matXCoor) <= numCols)) {
+	if (((imYCoor + matYCoor) >= 0) && ((imYCoor + matYCoor) <= numRows)) { 
+	   weighted_sumR += matrix[(matXCoor + (nDim/2)) + ((matYCoor + (nDim/2)) * nDim)] * (double)input->data[imXCoor + matXCoor + ((imYCoor + matYCoor) * numCols)].r; 
+	   weighted_sumG += matrix[(matXCoor + (nDim/2)) + ((matYCoor + (nDim/2)) * nDim)] * (double)input->data[imXCoor + matXCoor + ((imYCoor + matYCoor) * numCols)].g;
+	   weighted_sumB += matrix[(matXCoor + (nDim/2)) + ((matYCoor + (nDim/2)) * nDim)] * (double)input->data[imXCoor + matXCoor + ((imYCoor + matYCoor) * numCols)].b;       
+	   mat_sum += matrix[(matXCoor + (nDim/2)) + ((matYCoor + (nDim/2)) * nDim)];
+	 }
       }
 
-      if (matXCoor == nDim/2) {   //if you get to the end of a row in the matrix go to the start of the next row
-	matXCoor = - (nDim/2);
+      //if you get to the end of a row in the matrix go to the start of the next row
+      if (matXCoor == (nDim/2)) {
+	matXCoor = -(nDim/2);
 	matYCoor++; 
       }
       else {
@@ -305,18 +302,21 @@ void blur(Image * input, Image *output, double sigma){
       }
     }
 
-    output -> data[imXCoor - 1 + ((imYCoor - 1) * numCols)].r = weighted_sumR / mat_sum;
-    output -> data[imXCoor - 1 + ((imYCoor - 1) * numCols)].g = weighted_sumG / mat_sum;
-    output -> data[imXCoor - 1 + ((imYCoor - 1) * numCols)].b = weighted_sumB / mat_sum;
+    output->data[imXCoor + ((imYCoor) * numCols)].r = (weighted_sumR / mat_sum);
+    output->data[imXCoor + ((imYCoor) * numCols)].g = (weighted_sumG / mat_sum);
+    output->data[imXCoor + ((imYCoor) * numCols)].b = (weighted_sumB / mat_sum);
 
-
-    weighted_sumR = 0;  //reset weighted_sum for all 3 color values and mat_sum to 0 for next pixel.
+    //reset weighted_sum for all 3 color values and mat_sum to 0 for next pixel.
+    weighted_sumR = 0;
     weighted_sumG = 0;
     weighted_sumB = 0;
     mat_sum = 0;
+    matYCoor = -nDim/2;
+    matXCoor = -nDim/2;
 
-    if (imXCoor == nDim) {   //if you get to end of a row in image array go to start of next row
-      imXCoor = 1;
+    //if you get to end of a row in image array go to start of next row
+    if (imXCoor == (numCols - 1)) {
+      imXCoor = 0;
       imYCoor++; 
     }
     else{
