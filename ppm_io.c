@@ -222,7 +222,7 @@ void frun(int operval, Image * input1, Image * input2, Image * output, double fa
     pointilism(input1);
     break;
   case 17: //blur
-    blur(input1, output, factor);
+    //    blur(input1, output, factor);
     break;
   }
 }

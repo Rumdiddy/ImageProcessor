@@ -162,7 +162,7 @@ void pointilism(Image *input){
       for (int k = rand_y - rand_rad; k <= rand_y + rand_rad; k++) {
  
 	//if (x - a)^2 + (y - b)^2 <= radius^2, then perform transformation
-	if(k > 0 && j > 0 && k < (input->rows) && j < (input->cols)) {
+	if(k >= 0 && j >= 0 && k < (input->rows) && j < (input->cols)) {
 	  if (pow((rand_x - j), 2) + pow((rand_y - k), 2) <= pow(rand_rad,2)) {
 	    input->data[((numCols * k) + j)].r = input->data[((numCols * rand_y) + rand_x)].r;
 	    input->data[((numCols * k) + j)].g = input->data[((numCols * rand_y) + rand_x)].g;
@@ -182,18 +182,15 @@ void swirl(Image * input, Image *output, int cX, int cY, int distortScale){
   //(xSwColNum, ySwRowNum) initially set to (1,1)
   int xSwColNum = 1;   //column in input image
   int ySwRowNum = 1;   //row in input image
-
   int xOrigColNum; 
   int yOrigRowNum;
-
-  int inputLength = (input -> rows) * (input -> cols);
 
   int numCols = (input -> cols);
   int numRows = (input -> rows);
 
   while (ySwRowNum <= numRows) {   //while you aren't at the end of the image
 
-    alpha = sqrt(((pow(xSwColNum - cX, 2) + pow(ySwRolNum - cY, 2)) / distortScale));
+    alpha = (sqrt(pow((xSwColNum - cX), 2) + pow((ySwRowNum - cY), 2)) / distortScale);
 
     //gets corresponding coordinates from original input image: (xOrigColNum, yOrigRowNum)
     xOrigColNum = (xSwColNum - cX) * cos(alpha) - (ySwRowNum - cY) * sin(alpha) + cX;
