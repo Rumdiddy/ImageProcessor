@@ -1,3 +1,5 @@
+
+
 //Samuel Jin
 //Ajay Ananthakrishnan
 //sjin16
@@ -26,3 +28,6 @@ void pointilism(Image *input);
 
 //performs swirl function
 void swirl(Image * input, Image *output, int cX, int cY, int distortScale);
+
+//performs blur function
+void blur(Image * input, Image *output, double sigma);
