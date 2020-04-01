@@ -184,38 +184,38 @@ void swirl(Image * input, Image *output, int cX, int cY, int distortScale){
   int ySwRowNum = 1;   //row in input image
   int xOrigColNum; 
   int yOrigRowNum;
+  
+  int numCols = (output -> cols);
+  int numRows = (output -> rows);
 
-  int numCols = (input -> cols);
-  int numRows = (input -> rows);
+  while (ySwRowNum < (numRows)) {   //while you aren't at the end of the image
 
-  while (ySwRowNum <= numRows) {   //while you aren't at the end of the image
-
-    alpha = (sqrt(pow((xSwColNum - cX), 2) + pow((ySwRowNum - cY), 2)) / distortScale);
+    alpha = (sqrt(pow(((xSwColNum - 1) - cX), 2) + pow(((ySwRowNum - 1) - cY), 2)) / distortScale);
 
     //gets corresponding coordinates from original input image: (xOrigColNum, yOrigRowNum)
-    xOrigColNum = (xSwColNum - cX) * cos(alpha) - (ySwRowNum - cY) * sin(alpha) + cX;
-    yOrigRowNum	= (xSwColNum - cX) * sin(alpha)	+ (ySwRowNum - cY) * cos(alpha)	+ cY;
+    xOrigColNum = (((xSwColNum - 1) - cX) * cos(alpha)) - (((ySwRowNum - 1) - cY) * sin(alpha)) + cX;
+    yOrigRowNum	= (((xSwColNum - 1) - cX) * sin(alpha)) + (((ySwRowNum - 1) - cY) * cos(alpha)) + cY;
 
     //if (xOrigColNum, yOrigRowNum) coordinates are out of bounds, make corresponding swirl pixel black
-    if (xOrigColNum < 1 || xOrigColNum > numCols || yOrigRowNum < 1 || yOrigRowNum > numRows) {
+    if (xOrigColNum < 0 || xOrigColNum > (numCols - 1) || yOrigRowNum < 0 || yOrigRowNum > (numRows - 1)) {
       output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].r = 0;
       output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].g = 0;
-      output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].b = 0; 
+      output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].b = 0;  
     }
 
     //copy over original pixel color values to corresponding swirl pixel 
     else {
-    output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].r = input->data[(yOrigRowNum - 1) * numCols + xOrigColNum - 1].r;
-    output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].g = input->data[(yOrigRowNum - 1) * numCols + xOrigColNum - 1].g;
-    output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].b = input->data[(yOrigRowNum - 1) * numCols + xOrigColNum - 1].b;
+      output->data[((ySwRowNum - 1) * numCols) + (xSwColNum - 1)].r = input->data[((yOrigRowNum) * numCols) + (xOrigColNum)].r;
+      output->data[((ySwRowNum - 1) * numCols) + (xSwColNum - 1)].g = input->data[((yOrigRowNum) * numCols) + (xOrigColNum)].g;
+      output->data[((ySwRowNum - 1) * numCols) + (xSwColNum - 1)].b = input->data[((yOrigRowNum) * numCols) + (xOrigColNum)].b;
     }
 
     //update (xSwColNum, ySwRowNum) coordinates of swirl image
-    if (xSwColNum % numCols ==0) {
+    if (xSwColNum % numCols == 0) {
       ySwRowNum++;
       xSwColNum = 1; 
+    } else {    
+      xSwColNum++;
     }
-    
-    xSwColNum++; 
   }
 }
