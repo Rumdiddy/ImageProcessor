@@ -188,19 +188,19 @@ void swirl(Image * input, Image *output, int cX, int cY, int distortScale){
   int numCols = (output -> cols);
   int numRows = (output -> rows);
 
-  while (ySwRowNum < (numRows)) {   //while you aren't at the end of the image
+  while (ySwRowNum <= numRows) {   //while you aren't at the end of the image
 
     alpha = (sqrt(pow(((xSwColNum - 1) - cX), 2) + pow(((ySwRowNum - 1) - cY), 2)) / distortScale);
 
     //gets corresponding coordinates from original input image: (xOrigColNum, yOrigRowNum)
     xOrigColNum = (((xSwColNum - 1) - cX) * cos(alpha)) - (((ySwRowNum - 1) - cY) * sin(alpha)) + cX;
     yOrigRowNum	= (((xSwColNum - 1) - cX) * sin(alpha)) + (((ySwRowNum - 1) - cY) * cos(alpha)) + cY;
-
+    
     //if (xOrigColNum, yOrigRowNum) coordinates are out of bounds, make corresponding swirl pixel black
     if (xOrigColNum < 0 || xOrigColNum > (numCols - 1) || yOrigRowNum < 0 || yOrigRowNum > (numRows - 1)) {
-      output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].r = 0;
-      output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].g = 0;
-      output->data[(ySwRowNum - 1) * numCols + xSwColNum - 1].b = 0;  
+      output->data[(ySwRowNum - 1) * numCols + (xSwColNum - 1)].r = 0;
+      output->data[(ySwRowNum - 1) * numCols + (xSwColNum - 1)].g = 0;
+      output->data[(ySwRowNum - 1) * numCols + (xSwColNum - 1)].b = 0;  
     }
 
     //copy over original pixel color values to corresponding swirl pixel 
@@ -283,7 +283,7 @@ void blur(Image * input, Image *output, double sigma){
   while (imYCoor < numRows) {  //for every pixel in image
 
     //for every index in the Gaussian matrix. Works b/c last index: (nDim/2, nDim/2), sums to nDim
-    while (matXCoor + matYCoor <= nDim) {
+    while ( matYCoor <= (nDim/2)) {
 
       //if matrix is in bounds with respect to image
       if(((imXCoor + matXCoor) >= 0) && ((imXCoor + matXCoor) < numCols)) {
@@ -326,4 +326,5 @@ void blur(Image * input, Image *output, double sigma){
       imXCoor++; 
     }
   }
+  free(matrix);
 }

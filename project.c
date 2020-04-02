@@ -38,7 +38,7 @@ int main (int argc, char *argv[]) {
     return 7;
   }
 
-  Image * inputIm2 = malloc(sizeof(Image));
+  Image * inputIm2;
   //Check if blend is operation and will read in second input file
   if (opval == 12) {
     FILE* i2fptr = fopen(argv[4], "rb");
@@ -47,15 +47,24 @@ int main (int argc, char *argv[]) {
       return 2;
     }
     inputIm2 = read_ppm(i2fptr);
+    if (inputIm2->rows == -1 || inputIm2->rows < 0) {
+      printf("Specified input file is not properly formatted PPM file.\n");
+      return 3;
+    }
     fclose(i2fptr);
   }
 
   //Reads in input file pixel data and generates image
   Image * inputIm = read_ppm(ifptr);
-  if(((*inputIm).rows == -1) && ((*inputIm2).rows == -1)) {
-    printf("Specified input file is not a properly-formatted PPM.");
+  
+  if (inputIm->rows == -1) {
+    printf("Specified input file is not properly formatted PPM file.\n");
+    return 3;
+  } else  if (inputIm->rows < 0) {
+    printf("Specified input file has invalid size. Invalid PPM file.\n");
     return 3;
   }
+
   fclose(ifptr);
 
   //Further checks arguments provided for swirl
@@ -107,15 +116,23 @@ int main (int argc, char *argv[]) {
     outval = write_ppm(ofptr, inputIm);
   } else {
     outval = write_ppm(ofptr, outputIm);
+    free(outputIm->data);
   }
-
+  fclose(ofptr);
+  
   if (outval == -1) {
     printf("Writing output to file failed or invalid. \n");
     return 7;
   }
   
+  free(inputIm->data);
+
+  if (opval == 12) {
+    free(inputIm2->data);
+    free(inputIm2);
+  }
+
   free(inputIm);
-  free(inputIm2);
   free(outputIm);
    
   return 0;

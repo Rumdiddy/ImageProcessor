@@ -9,7 +9,10 @@
 #include <assert.h>
 #include "ppm_io.h"
 #include <string.h>
+
+#define  _GNU_SOURCE
 #include <stdio.h>
+
 #include <stdlib.h>
 #include "imageManip.h"
 #include <limits.h>
@@ -36,16 +39,17 @@ Image * read_ppm(FILE *fp) {
     (*input).rows = -1;
     return input;
   }
-
+   
   //Checks for comment after P6
   char * line = NULL;
-  int len = 0;
+  size_t len = 0;
   n = fgetc(fp);
   if (n == '#') {
-    getline(&line, &len, fp);
+    len = getline(&line, &len, fp);
   } else {
     ungetc(n,fp);
   }
+  free(line);
   
   fscanf(fp, "%i %i %i", &col, &row, &colors);
   if (colors != 255) {
@@ -140,13 +144,13 @@ int arg_check(int argc, char *argv[]) {
     } else if (strtof(argv[4], NULL) > 3 || strtof(argv[4], NULL) < -3) {
       printf("Arguments for specified operation were out of range.\n");
       return 6;
-    } else if (argc > 5) {
+    } else if (argc > 5 || argc < 5) {
       printf("Incorrect number of arguments for specified operation.\n");
       return 5;
     }
       break;
   case 12: //blend 
-    if (argc > 6) {
+    if (argc > 6 || argc < 6) {
       printf("Incorrect number of arguments for specified operation.\n");
       return 5;
     } else if (strtof(argv[5], NULL) == 0.0F && *argv[5] != 48) {
@@ -244,10 +248,15 @@ Image * gen_out(int oper, Image *input1, Image *input2) {
   int cols1 = (*input1).cols;
   int size1 = rows1 * cols1;
 
-  int rows2 = (*input2).rows;
-  int cols2 = (*input2).cols;
-
-  Image *output = malloc(sizeof(Image));
+  int rows2;
+  int cols2;
+  
+  if (oper == 12) {
+    rows2 = (*input2).rows;
+    cols2 = (*input2).cols;
+  }
+  
+  Image * output = malloc(sizeof(Image));
   int osize;
 
   switch (oper) {
