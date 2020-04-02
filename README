@@ -1,0 +1,15 @@
+@aananth3 - Ajay Ananth
+@sjin ??  - Sam Jin
+@README
+
+We, the creators of this project, in order to briefly explain this project, created this README file.
+
+We implemented the functions asked of us. A reoccuring theme among the functions is to keep track of the current pixel location. Additionally, we decided to make all our functions void andinstead pass pointers of the input/output. We ran into errors in which we did not dereference the elements of the pointers (which are pixel structures in this case). Use of paranthesis was heavily implemented in this program, as well as if functions and while loops.
+
+Another component of this program was to correctly handle the user input. This was somewhat tedious to do because it involved a lot of cases. Additionally, we decided to check that the input was valid and also initialize the output image outside of the functions that performed the transformations. This compartmentalization helped make the actual imageManip.c function as simple as can be, since it only has to deal with the actual trasformations.
+
+Something of interest to us was the blur function. We implemented the Gaussian blur techniqu. But how exactly does this technique work? What is this Gaussian blur method? Will we ever find out? Perhaps.
+
+Overall, this project was a good learning experience and allowed for us to practice our skills. Additionally, working as a team was beneficial and helped us understand how to use pull/push, and resolve merge conflicts.
+
+
