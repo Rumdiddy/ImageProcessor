@@ -50,21 +50,22 @@ int main (int argc, char *argv[]) {
     if (inputIm2->rows == -1 || inputIm2->rows < 0) {
       printf("Specified input file is not properly formatted PPM file.\n");
       return 3;
+    } else if (inputIm2->cols < 0) {
+      printf("Specified input file has invalid size.\n");
+      return 3;
     }
     fclose(i2fptr);
   }
 
   //Reads in input file pixel data and generates image
   Image * inputIm = read_ppm(ifptr);
-  
-  if (inputIm->rows == -1) {
-    printf("Specified input file is not properly formatted PPM file.\n");
+  if (inputIm->rows == -1 || inputIm->rows < 0) {
+    printf("Specified input file has invalid size.\n");
     return 3;
-  } else  if (inputIm->rows < 0) {
-    printf("Specified input file has invalid size. Invalid PPM file.\n");
+  } else if (inputIm->cols < 0) {
+    printf("Specified input file has invalid size.\n");
     return 3;
   }
-
   fclose(ifptr);
 
   //Further checks arguments provided for swirl
@@ -98,7 +99,7 @@ int main (int argc, char *argv[]) {
     factor = strtod(argv[4], NULL);
     break;
   }
-    
+
   //Generates empty output image to write into
   Image * outputIm = gen_out(opval, inputIm, inputIm2);
 

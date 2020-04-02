@@ -9,6 +9,7 @@
 #ifndef PPM_IO_H
 #define PPM_IO_H
 
+#define _GNU_SOURCE
 #include <stdio.h>
 
 /* A struct to store a single RGB pixel, one byte per color channel.

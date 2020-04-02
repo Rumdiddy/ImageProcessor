@@ -57,6 +57,12 @@ Image * read_ppm(FILE *fp) {
     return input;
   }
 
+  //checks for valid row and cols
+  if (col < 0 || row < 0) {
+    (*input).rows = -2;
+    return input;
+  }
+  
   //sets rows and columns
   (*input).rows = row;
   (*input).cols = col;
@@ -138,17 +144,17 @@ int arg_check(int argc, char *argv[]) {
   //Check for correct operation arguments
   switch (oper) {
   case 11: //exposure
-    if (strtof(argv[4], NULL) == 0.0F && *argv[4] != 48) {
+    if (argc < 5 || argc > 5) {
+       printf("Incorrect number of arguments for specified operation.\n");
+      return 5;
+    } else if (strtof(argv[4], NULL) == 0.0F && *argv[4] != 48) {
       printf("Arguments for specified operation were senseless.\n");
       return 6;
     } else if (strtof(argv[4], NULL) > 3 || strtof(argv[4], NULL) < -3) {
       printf("Arguments for specified operation were out of range.\n");
       return 6;
-    } else if (argc > 5 || argc < 5) {
-      printf("Incorrect number of arguments for specified operation.\n");
-      return 5;
     }
-      break;
+    break;
   case 12: //blend 
     if (argc > 6 || argc < 6) {
       printf("Incorrect number of arguments for specified operation.\n");
@@ -162,19 +168,19 @@ int arg_check(int argc, char *argv[]) {
     }
     break;
   case 13: //zoom_in
-    if (argc > 4) {
+    if (argc > 4 || argc < 4) {
       printf("Incorrect number of arguments for specified operation.\n");
       return 5;
     }
     break;
   case 14: //zoom_out
-    if (argc > 4) {
+    if (argc > 4 || argc < 4) {
       printf("Incorrect number of arguments for specified operation.\n");
       return 5;
     }
     break;
   case 15: //pointilism
-    if (argc > 4) {
+    if (argc > 4 || argc < 4) {
       printf("Incorrect number of arguments for specified operation.\n");
       return 5;
     }
