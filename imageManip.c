@@ -223,23 +223,27 @@ void swirl(Image * input, Image *output, int cX, int cY, int distortScale){
 void blur(Image * input, Image *output, double sigma){
 
   //creates Gaussian matrix with sigma parameter
-  int nDim;
-  int center;
+  int nDim = 0;
+  int center = 0;
   int xCoor = 0;
   int yCoor = 0;  
-  int dX;
-  int dY;
+  int dX = 0;
+  int dY = 0;
 
   const double PI = 3.14159265358979323846;
   //sigma = sigma + (fmod(sigma, 0.1));  //rounds sigma down 
-  
+    
   //code to determine dimensions of G. matrix
   if (fmod((sigma * 10), 2.0) == 0) {
-    nDim = (sigma * 10) + 1;
+    nDim = (int)(sigma * 10.0) + 1;
   }
   else {
-    nDim = sigma * 10;
+    nDim = (int)(sigma * 10.0);
   }
+
+  //This print statment fixed everything. IDK why but keep this here.
+  printf("This is our solution to the blur.");
+  printf("\33[2K\r");
   
   double * matrix = malloc((nDim * nDim) * sizeof(double)); //initializes G. matrix
   
@@ -251,11 +255,11 @@ void blur(Image * input, Image *output, double sigma){
 
     //Gaussian Formula
     matrix[(yCoor * nDim) + xCoor] = (double)(1.0 / (2.0 * PI * pow(sigma, 2))) * exp(-((pow(dX, 2) + pow(dY, 2)) / (2.0 * pow(sigma, 2))));
-        
+       
     //Moves onto the next row
     if (xCoor == (nDim - 1)) {
       xCoor = 0;
-      yCoor++; 
+      yCoor++;
     } else {
       xCoor++; 
     }
@@ -273,7 +277,6 @@ void blur(Image * input, Image *output, double sigma){
   double weighted_sumR = 0;       //weightedSum vars for 3 color channels.
   double weighted_sumG = 0;
   double weighted_sumB = 0;
-
   double mat_sum = 0;
 
   
@@ -283,11 +286,11 @@ void blur(Image * input, Image *output, double sigma){
     while (matXCoor + matYCoor <= nDim) {
 
       //if matrix is in bounds with respect to image
-      if(((imXCoor + matXCoor) >= 0) && ((imXCoor + matXCoor) <= numCols)) {
-	if (((imYCoor + matYCoor) >= 0) && ((imYCoor + matYCoor) <= numRows)) { 
-	   weighted_sumR += matrix[(matXCoor + (nDim/2)) + ((matYCoor + (nDim/2)) * nDim)] * (double)input->data[imXCoor + matXCoor + ((imYCoor + matYCoor) * numCols)].r; 
-	   weighted_sumG += matrix[(matXCoor + (nDim/2)) + ((matYCoor + (nDim/2)) * nDim)] * (double)input->data[imXCoor + matXCoor + ((imYCoor + matYCoor) * numCols)].g;
-	   weighted_sumB += matrix[(matXCoor + (nDim/2)) + ((matYCoor + (nDim/2)) * nDim)] * (double)input->data[imXCoor + matXCoor + ((imYCoor + matYCoor) * numCols)].b;       
+      if(((imXCoor + matXCoor) >= 0) && ((imXCoor + matXCoor) < numCols)) {
+	if (((imYCoor + matYCoor) >= 0) && ((imYCoor + matYCoor) < numRows)) { 
+	   weighted_sumR += matrix[(matXCoor + (nDim/2)) + ((matYCoor + (nDim/2)) * nDim)] * input->data[imXCoor + matXCoor + ((imYCoor + matYCoor) * numCols)].r;
+	   weighted_sumG += matrix[(matXCoor + (nDim/2)) + ((matYCoor + (nDim/2)) * nDim)] * input->data[imXCoor + matXCoor + ((imYCoor + matYCoor) * numCols)].g;
+	   weighted_sumB += matrix[(matXCoor + (nDim/2)) + ((matYCoor + (nDim/2)) * nDim)] * input->data[imXCoor + matXCoor + ((imYCoor + matYCoor) * numCols)].b;
 	   mat_sum += matrix[(matXCoor + (nDim/2)) + ((matYCoor + (nDim/2)) * nDim)];
 	 }
       }
